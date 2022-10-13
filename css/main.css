@@ -73,13 +73,28 @@ nav .navbar-nav {
   justify-content: center;
 }
 .country-card .country-card-body {
+  box-shadow: -1px 6px 24px -13px rgb(66, 68, 90);
   padding: 0 2em;
-  border: 0.1em solid #eee;
+  background-color: rgb(247, 247, 247);
+}
+.country-card .country-card-body .country-flag-detail .country-flag {
+  width: 80vw;
 }
 .country-card .country-card-body .country-detail {
   font-size: 2rem;
 }
+.country-card .country-card-body .country-detail-map {
+  height: 300px;
+}
+.country-card .country-card-body .country-flag-detail .country-flag {
+  padding-top: 2em;
+}
 
+@media (min-width: 576px) {
+  .country-card .country-card-body .country-flag-detail .country-flag {
+    width: auto;
+  }
+}
 @media (min-width: 992px) {
   .country-search-form .country-search-form-content .form-group .form-control {
     width: 20vw;

@@ -1,9 +1,9 @@
 "use strict";
 
-
 const countrySearchForm = document.querySelector('#search');
 const countryCard = document.querySelector('.country-card');
 let inputOfCountry = document.querySelector('.input-of-country');
+const mapOfCountry = document.getElementsByClassName("country-detail-map")
 let TranslatedCountryName = null;
 let map = null;
 
@@ -73,40 +73,33 @@ async function translateCountryData(data) {
 }
 
 const renderCountry = function(data) {
-
     countryCard.innerHTML = `
     <div class="country-card-body">
                 <p class="country-flag-detail">
                 <img src="${data[5]}" class="country-flag" alt="Flag of country">
                 </p>
-                <h5 class="country-name">${data[0]}</h5>
-                <p class="country-detail">Stolica: ${data[1]}</p>
-                <p class="country-detail">Waluta: ${data[2]}</p>
-                <p class="country-detail">Liczba ludności: ${(data[4]/ 1000000).toFixed(1)} M</p>
-                <p class="country-detail">Kontynent: ${data[3]}</p>
+                <p class="country-detail"><b>Nazwa kraju: </b>${data[0]}</p>
+                <p class="country-detail"><b>Stolica: </b>${data[1]}</p>
+                <p class="country-detail"><b>Waluta: </b>${data[2]}</p>
+                <p class="country-detail"><b>Liczba ludności: </b>${(data[4]/ 1000000).toFixed(1)} M</p>
+                <p class="country-detail"><b>Kontynent: </b>${data[3]}</p>
+                <p class="country-detail"><b>Lokalizacja: </b></p>
+                <p class="country-detail-map" id="map"></p>
     </div>
     `
 
-    maps.innerHTML=`
-    <div class="country-card">
+    if (map != undefined) {
+         map.remove(); 
+        }
+  map = L.map("map").setView([data[6],data[7]],4)
    
-</div>
-       `
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: 
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
-   
-//     if (map != undefined) {
-//          map.remove(); 
-//         }
-//   map = L.map("maps").setView([array[6],array[7]],4)
-   
-//     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-//         attribution: 
-//         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//     }).addTo(map);
-
-//     L.marker([array[6],array[7]])
-//     .addTo(map)
-//     .bindPopup(`<h2 class="country-name">${array[0]}</h2>`)
-//     .openPopup();
-
+    L.marker([data[6],data[7]])
+    .addTo(map)
+    .bindPopup(`<h2 class="country-name">${data[0]}</h2>`)
+    .openPopup();
 }
