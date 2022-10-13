@@ -68,8 +68,20 @@ nav .navbar-nav {
   background-color: rgb(43, 102, 190);
 }
 
+.country-card {
+  display: flex;
+  justify-content: center;
+}
+.country-card .country-card-body {
+  padding: 0 2em;
+  border: 0.1em solid #eee;
+}
+.country-card .country-card-body .country-detail {
+  font-size: 2rem;
+}
+
 @media (min-width: 992px) {
   .country-search-form .country-search-form-content .form-group .form-control {
-    width: 30vw;
+    width: 20vw;
   }
 }/*# sourceMappingURL=main.css.map */

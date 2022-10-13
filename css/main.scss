@@ -33,9 +33,7 @@ nav {
 	}
 }
 
-
 .country-search-form {
-
 	.country-search-form-content {
 		.form-group {
 			margin: 2em 1em;
@@ -53,16 +51,13 @@ nav {
 			h1 {
 				font-size: 3.5rem;
 			}
-	
 			button:hover {
 				color: $white-color;
 				background-color: $main-color;
 			}
-
 			.form-control {
 				width: 90vw;
 			}
-
 			.search-button {
 				margin-left: 0.5em;
 				padding: 0.2em 1em;
@@ -81,21 +76,25 @@ nav {
 	}
 }
 
-@media(min-width: 567px) {
-	.country-search-form {
-	//	height: 100vh;
-		//width: 1000px;
+.country-card {
+	display: flex;
+	justify-content: center;
+	.country-card-body {
+		padding: 0 2em;
+		border: 0.1em solid $gray-color;
+		
+		.country-detail {
+			font-size: 2rem;
+		}
 	}
 }
 
 @media (min-width: 992px) { 
 	.country-search-form {
-
 		.country-search-form-content {
 			.form-group {
-
 				.form-control {
-					width: 30vw;
+					width: 20vw;
 				}
 			}
 		
