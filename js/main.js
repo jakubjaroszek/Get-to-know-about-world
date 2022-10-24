@@ -1,5 +1,6 @@
 "use strict";
 
+const countryShowForm = document.querySelector('.country-show-form')
 const countrySearchForm = document.querySelector('#search');
 const countryCard = document.querySelector('.country-card');
 let inputOfCountry = document.querySelector('.input-of-country');
@@ -7,7 +8,10 @@ const mapOfCountry = document.getElementsByClassName("country-detail-map")
 let TranslatedCountryName = null;
 let map = null;
 
+//interaction with user
 countrySearchForm.addEventListener('submit', function (e) {
+    countryCard.innerHTML = "";
+    displayLoadingSpinner();
     e.preventDefault()
     if (inputOfCountry.value.includes('polska')) {
         getCountryData('polska');
@@ -20,59 +24,74 @@ countrySearchForm.addEventListener('submit', function (e) {
     }
 }) 
 
+//fetching data from restcountries API
 async function  getCountryData(country) {
-    await fetch(`https://restcountries.com/v3.1/name/${country}`).then(function (res) {
-         console.log(res);
-         if(!res.ok) throw new Error('country not found')
-         return res.json()
-     }).then(data => {
-         translateCountryData(data[0]);
-     }).catch(err => console.log(err))
+        const request =  await fetch(`https://restcountries.com/v3.1/name/${country}`);
+        if(request.ok) {
+            const data = await request.json();
+            translateCountryData(data[0]);
+        } else if (!request.ok) {
+            throw (alert('Podany kraj nie został znaleziony'))
+        }
  }
  
- 
+ //function responsible for translating from polish to english input country from User
  async function translateCountryName (text) {
-     let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=Polish|English`;
-     await fetch(apiUrl).then(res => res.json()).then(data => {
-        
-         return TranslatedCountryName = data.responseData.translatedText;
-         
-      })
+    let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=Polish|English`;
+    
+    const request = await fetch(apiUrl)
+    if(request.ok) {
+        const data = await request.json();
+        return TranslatedCountryName = data.responseData.translatedText;
+    } else if (!request.ok) {
+        throw (console.error('Error with translating country name'))
+    }
  }
 
+ //function responsible for translating from english to polish data received from API
 async function translateCountryData(data) {
     let TranslatedCountryData = [];
+    
+    //variables for displaying map in renderCountry function
     let [lat,lng] = data.latlng
+    
     const flagOfCountry = data.flags.png;
-
+    const populationOfCountry = data.population;
+    
+    //data for translation
     const currency = data.currencies;
     const [curr] = [...Object.values(currency)];
-
-    const populationOfCountry = data.population;
-    console.log(flagOfCountry)
+    const currencyOfCountry = curr.name;
     const nameOfCountry = data.name.common;
     const capitalOfCountry = data.capital;
-    const currencyOfCountry = curr.name;
     const continentOfCountry = data.continents;
 
     const dataForTranslation = [nameOfCountry,capitalOfCountry[0],currencyOfCountry,continentOfCountry[0]]
     
-    for (let i = 0 ; i < dataForTranslation.length; i++) {
+    //loop for iteration of data that need to be translated to polish language
+    for (let i = 0; i < dataForTranslation.length; i++) {
         let apiUrl = `https://api.mymemory.translated.net/get?q=${dataForTranslation[i]}&langpair=English|Polish&de=dlgs1123@gmail.com`;
-        await fetch(apiUrl).then(res => res.json()).then(data => {
+
+        const request = await fetch(apiUrl);
+        if(request.ok) {    
+            data = await request.json();
             TranslatedCountryData[i] = data.responseData.translatedText;
-         })
-    
+        }else if (!request.ok) {
+            throw (console.error('Error with translateCountryData function'))
+        }
     }
+    //pushing of data that not need to be translated
     TranslatedCountryData.push(populationOfCountry)
     TranslatedCountryData.push(flagOfCountry)
     TranslatedCountryData.push(lat)
     TranslatedCountryData.push(lng)
+
     renderCountry(TranslatedCountryData);
- 
 }
 
+//sending processed data to view in index.html
 const renderCountry = function(data) {
+    //generating html template and inserting data
     countryCard.innerHTML = `
     <div class="country-card-body">
                 <p class="country-flag-detail">
@@ -87,19 +106,30 @@ const renderCountry = function(data) {
                 <p class="country-detail-map" id="map"></p>
     </div>
     `
-
+    //generating map view of country with Leaflet library
     if (map != undefined) {
          map.remove(); 
-        }
-  map = L.map("map").setView([data[6],data[7]],4)
+        } 
+            map = L.map("map").setView([data[6],data[7]],4)
    
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: 
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
-    L.marker([data[6],data[7]])
-    .addTo(map)
-    .bindPopup(`<h2 class="country-name">${data[0]}</h2>`)
-    .openPopup();
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: 
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            }).addTo(map);
+        
+            L.marker([data[6],data[7]])
+            .addTo(map)
+            .bindPopup(`<h2 class="country-name">${data[0]}</h2>`)
+            .openPopup();
+        
+        removeLoadingSpinner();
 }
+
+//showing and hiding loading spinner;
+const displayLoadingSpinner = () => {
+    countryShowForm.classList.add('loader-spinner')
+ }
+ 
+ const removeLoadingSpinner = () => {
+     countryShowForm.classList.remove('loader-spinner')
+  }
