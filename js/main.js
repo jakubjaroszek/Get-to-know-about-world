@@ -31,9 +31,10 @@ async function  getCountryData(country) {
             const data = await request.json();
             translateCountryData(data[0]);
         } else if (!request.ok) {
-            throw (alert('Podany kraj nie został znaleziony'))
+            removeLoadingSpinner();
+            throw (alert('Podany kraj nie został znaleziony'));
         }
- }
+    }
  
  //function responsible for translating from polish to english input country from User
  async function translateCountryName (text) {
@@ -131,5 +132,5 @@ const displayLoadingSpinner = () => {
  }
  
  const removeLoadingSpinner = () => {
-     countryShowForm.classList.remove('loader-spinner')
-  }
+    countryShowForm.classList.remove('loader-spinner')
+ }
